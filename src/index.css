@@ -1,20 +1,323 @@
-/* 导入 Tailwind 的基础、组件和工具样式 */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>赛考冲刺站 - Python基础</title>
+    <style>
+        /* 基础设置 */
+        body {
+            font-family: 'Inter', "PingFang SC", "Microsoft YaHei", sans-serif;
+            background-color: #f7f9fc;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+        }
 
-/* 自定义全局样式 */
-body {
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+        /* 布局容器 */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            width: 100%;
+        }
 
-/* 自定义动画 (从 App.jsx 中提取，保证样式能被 Tailwind 预处理) */
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.animate-fade-in {
-  animation: fade-in 0.5s ease-out forwards;
-}
+        /* 顶部标题栏 */
+        header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4f46e5; /* Indigo-700 */
+        }
+
+        header p {
+            font-size: 0.875rem;
+            color: #6b7280; /* Gray-500 */
+            margin-top: 0.25rem;
+        }
+
+        /* 主要内容 */
+        main {
+            flex-grow: 1;
+            padding-bottom: 5rem; /* 留出底部导航空间 */
+        }
+
+        /* 寄语卡片样式 */
+        .message-card {
+            background-color: #ffffff;
+            padding: 1.5rem;
+            border-radius: 1rem; /* rounded-2xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            border-top: 4px solid #6366f1; /* border-t-4 border-indigo-500 */
+            margin-bottom: 2rem;
+        }
+
+        .alert-box {
+            background-color: #eef2ff; /* Indigo-50 */
+            border-left: 4px solid #818cf8; /* border-l-4 border-indigo-400 */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .alert-box p {
+            font-weight: 600;
+            color: #4338ca; /* Indigo-800 */
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .alert-box span.icon {
+            font-size: 1.25rem;
+            margin-right: 0.5rem;
+            margin-top: 0.125rem;
+        }
+
+        .alert-box p.detail {
+            font-size: 0.875rem;
+            color: #4f46e5; /* Indigo-700 */
+            margin-top: 0.5rem;
+            line-height: 1.5;
+        }
+
+        /* 统计卡片组 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background-color: #ffffff;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stat-card:hover {
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card .number {
+            font-size: 2.25rem; /* 4xl */
+            font-weight: 800; /* extrabold */
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-card .label {
+            font-size: 0.875rem; /* sm */
+            font-weight: 500;
+            color: #4b5563; /* Gray-600 */
+        }
+
+        .card-yellow { border-color: #fcd34d; } /* Yellow-300 */
+        .card-yellow .number { color: #d97706; } /* Yellow-600 */
+
+        .card-blue { border-color: #93c5fd; } /* Blue-300 */
+        .card-blue .number { color: #2563eb; } /* Blue-600 */
+
+        .card-green { border-color: #a7f3d0; } /* Green-300 */
+        .card-green .number { color: #059669; } /* Green-600 */
+
+        /* 底部导航栏 */
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #ffffff;
+            border-top: 1px solid #e5e7eb;
+            box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 -2px 4px -2px rgba(0, 0, 0, 0.06); /* shadow-2xl */
+        }
+
+        .nav-bar {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 4rem; /* h-16 */
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #6b7280; /* Gray-500 */
+            transition: color 0.15s ease;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .nav-item:hover {
+            color: #4f46e5; /* Indigo-600 */
+        }
+
+        .nav-item.active {
+            color: #4f46e5; /* Indigo-600 */
+            font-weight: 600;
+        }
+
+        .nav-item svg {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+
+        .nav-item span {
+            font-size: 0.75rem; /* text-xs */
+            margin-top: 0.125rem;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+            header h1 {
+                font-size: 1.25rem; /* sm:text-2xl was 1.5rem, now slightly smaller on mobile */
+            }
+            .message-card {
+                padding: 1rem;
+            }
+            .stats-grid {
+                gap: 0.75rem;
+            }
+            .stat-card .number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部标题和科目信息 -->
+    <header>
+        <div class="container">
+            <!-- L1-1 赛考冲刺站 -->
+            <h1>L1-1 赛考冲刺站</h1>
+            <!-- Python基础 -->
+            <p>Python基础</p>
+        </div>
+    </header>
+
+    <!-- 主要内容区域 -->
+    <main>
+        <div class="container">
+
+            <!-- 老师的话 / 致家长致孩子 -->
+            <section style="margin-bottom: 2rem;">
+                <h2 style="font-size: 1.125rem; font-weight: 600; color: #4b5563; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; margin-bottom: 1rem;">老师的话</h2>
+                
+                <!-- 寄语卡片 -->
+                <div class="message-card">
+                    <p style="font-size: 1rem; font-weight: 500; color: #1f2937; margin-bottom: 1rem;">
+                        亲爱的家长：
+                    </p>
+                    
+                    <p style="color: #374151; margin-bottom: 1.5rem; line-height: 1.625;">
+                        咱们进入了赛考的备战期。我特意做了这个小网站，里面有我总结的英语单词和重难点知识。
+                    </p>
+
+                    <div class="alert-box">
+                        <p>
+                            <span class="icon">📢</span> <span>关于焦虑：</span>
+                        </p>
+                        <p class="detail">
+                            我想给您吃一颗定心丸。虽然是赛考，但只要跟着我认真复习，孩子绝对没问题！这个界面也是为了给孩子一个可视化的复习环境。
+                        </p>
+                    </div>
+
+                    <p style="color: #374151; line-height: 1.625; font-size: 0.875rem;">
+                        如果您没报名这次赛考也不要紧，知识学到手才是最重要的。这里也是重点知识的汇总，学扎实了，后面遇到什么比赛都能轻松应对！
+                    </p>
+                </div>
+            </section>
+
+            <!-- L1-1 学习进度 / 统计概览 -->
+            <section>
+                <h2 style="font-size: 1.125rem; font-weight: 600; color: #4b5563; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; margin-bottom: 1rem;">
+                    L1-1 学习进度 <span style="font-size: 0.875rem; font-weight: 400; color: #059669; margin-left: 0.5rem;">(本周目标进行中)</span>
+                </h2>
+                
+                <!-- 进度统计卡片组：三列布局 -->
+                <div class="stats-grid">
+                    
+                    <!-- 核心单词 -->
+                    <div class="stat-card card-yellow">
+                        <p class="number">7</p>
+                        <p class="label">核心单词</p>
+                    </div>
+                    
+                    <!-- 知识点 -->
+                    <div class="stat-card card-blue">
+                        <p class="number">4</p>
+                        <p class="label">知识点</p>
+                    </div>
+                    
+                    <!-- 真题 -->
+                    <div class="stat-card card-green">
+                        <p class="number">3</p>
+                        <p class="label">真题</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- 底部导航栏 -->
+    <footer>
+        <nav class="nav-bar">
+            <!-- 首页 (当前激活) -->
+            <a href="#" class="nav-item active">
+                <!-- SVG Icon for Home -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                <span>首页</span>
+            </a>
+            
+            <!-- 单词 -->
+            <a href="#" class="nav-item">
+                <!-- SVG Icon for Book/Words -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V15a2 2 0 0 1 2-2h14"/><path d="M4 22c-1.5 0-3-1.5-3-3s1.5-3 3-3 3 1.5 3 3-1.5 3-3 3z"/><path d="M16 8h2a2 2 0 0 1 2 2v7.5"/><path d="M12 2c1.333 0 2 0 2 2v10a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h2"/></svg>
+                <span>单词</span>
+            </a>
+            
+            <!-- 知识点 -->
+            <a href="#" class="nav-item">
+                <!-- SVG Icon for Lightbulb/Knowledge -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .9-1.6 1.8-1.6 1.1 0 2 1.5 2 3s-.9 3-2 3c-.7 0-1.4-.4-1.8-1"/><path d="M17 19.3V21a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1v-1.7"/><path d="M13 3l.4.7c.3.5.7 1.2 1.3 1.7a2 2 0 0 0 1.9.8h.4c1 0 1.6.4 1.9.9l.4.8c.3.5.5 1.2.6 1.9v.9"/><path d="M7 3l-.4.7c-.3.5-.7 1.2-1.3 1.7a2 2 0 0 0-1.9.8h-.4c-1 0-1.6.4-1.9.9l-.4.8c-.3.5-.5 1.2-.6 1.9v.9"/><path d="M12 22a7 7 0 0 1-7-7c0-1.8.6-3.5 1.7-4.8A8 8 0 0 1 12 5.5a8 8 0 0 1 5.3 1.7c1.1 1.3 1.7 3 1.7 4.8a7 7 0 0 1-7 7z"/><path d="M9 15h6"/><path d="M12 18v-3"/></svg>
+                <span>知识点</span>
+            </a>
+            
+            <!-- 真题 -->
+            <a href="#" class="nav-item">
+                <!-- SVG Icon for List/Quiz -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                <span>真题</span>
+            </a>
+            
+            <!-- 留言 -->
+            <a href="#" class="nav-item">
+                <!-- SVG Icon for Message/Chat -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 21 1.9-5.7a8.5 8.5 0 1 1 3.8 3.8L3 21z"/></svg>
+                <span>留言</span>
+            </a>
+        </nav>
+    </footer>
+</body>
+</html>
